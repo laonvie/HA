@@ -309,7 +309,7 @@ def fan_parse(value):
     if logtxt != "" and config.get('Log', 'show_recv_hex') == 'True':
         logging.info(logtxt)
     return { 'state': state, 'preset': preset}
-
+'''
 # 2023.08 AC 추가
 def ac_parse(value):
     mode_dic = {'00': 'cool', '01': 'fan_only', '02': 'dry', '03': 'auto'}
@@ -323,7 +323,7 @@ def ac_parse(value):
     if logtxt != '' and config.get('Log', 'show_recv_hex') == 'True':
         logging.info(logtxt)
     return {'state': state, 'fan': fan, 'temperature': temperature, 'target': target}
-
+'''
 # query device --------------------------
 
 def query(device_h, publish=False, enforce=False):
@@ -443,7 +443,8 @@ def mqtt_on_message(mqttc, obj, msg):
         value = '1100' + settemp_hex + '0000000000'
         send_wait_response(dest=dev_id, value=value, log='thermo settemp')
 
- # 2023.08 AC 추가
+    '''
+    # 2023.08 AC 추가
     elif 'ac' in topic_d and 'ac_mode' in topic_d:
         is_on = '10' if command != 'off' else '00'
         acmode_dic = {'off': '00', 'cool': '00','fan_only': '01', 'dry': '02', 'auto': '03'}
@@ -471,7 +472,7 @@ def mqtt_on_message(mqttc, obj, msg):
         value = '1010000000' + settemp_hex + '0000'
         send_wait_response(dest=dev_id, value=value, log='ac settemp')
  
- 
+    '''    
     # light on/off : kocom/livingroom/light/1/command
     elif 'light' in topic_d:
         dev_id = device_h_dic['light'] + room_h_dic.get(topic_d[1])
@@ -567,10 +568,14 @@ def packet_processor(p):
             state = thermo_parse(p['value'])
             logtxt='[MQTT publish|thermo] id[{}] data[{}]'.format(p['src_subid'], state)
             mqttc.publish("kocom/room/thermo/" + p['src_subid'] + "/state", json.dumps(state))
+            
+        """
         elif p['src'] == 'ac' and p['cmd'] == 'state':
             state = ac_parse(p['value'])
             logtxt = '[MQTT publish|ac] id[{}] data[{}]'.format(p['src_subid'], state)
             mqttc.publish('kocom/room/ac/' + p['src_subid'] + '/state', json.dumps(state), retain=True)
+        """
+
         elif p['src'] == 'air':
             if int(p['value'], 16) > 0:
                 state = air_parse(p['value'])
