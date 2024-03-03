@@ -310,7 +310,7 @@ def fan_parse(value):
     if logtxt != "" and config.get('Log', 'show_recv_hex') == 'True':
         logging.info(logtxt)
     return { 'state': state, 'preset': preset}
-
+'''
 # 2023.08 AC 추가
 def ac_parse(value):
     mode_dic = {'00': 'cool', '01': 'fan_only', '02': 'dry', '03': 'auto'}
@@ -326,7 +326,7 @@ def ac_parse(value):
     return {'state': state, 'fan': fan, 'temperature': temperature, 'target': target}
 
 # query device --------------------------
-
+'''
 def query(device_h, publish=False, enforce=False):
     # find from the cache first
     for c in cache_data:
@@ -591,7 +591,7 @@ def packet_processor(p):
         logtxt='[MQTT publish|elevator] data[{}]'.format(state)
         mqttc.publish("kocom/myhome/elevator/state", json.dumps(state))
         # aa5530bc0044000100010300000000000000350d0d
-        
+
         '''
         elif p['src'] == 'ac' and p['cmd'] == 'state':
             state = ac_parse(p['value'])
