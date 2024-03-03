@@ -567,15 +567,6 @@ def packet_processor(p):
             state = thermo_parse(p['value'])
             logtxt='[MQTT publish|thermo] id[{}] data[{}]'.format(p['src_subid'], state)
             mqttc.publish("kocom/room/thermo/" + p['src_subid'] + "/state", json.dumps(state))
-        elif p['src'] == 'ac' and p['cmd'] == 'state':
-            state = ac_parse(p['value'])
-            logtxt = '[MQTT publish|ac] id[{}] data[{}]'.format(p['src_subid'], state)
-            mqttc.publish('kocom/room/ac/' + p['src_subid'] + '/state', json.dumps(state), retain=True)
-        elif p['src'] == 'air':
-            if int(p['value'], 16) > 0:
-                state = air_parse(p['value'])
-            logtxt = '[MQTT publish|air] data[{}]'.format(state)
-            mqttc.publish('kocom/livingroom/air/state', json.dumps(state), retain=True)
         elif p['src'] == 'light' and p['cmd'] == 'state':
             state = light_parse(p['value'])
             logtxt='[MQTT publish|light] room[{}] data[{}]'.format(p['src_room'], state)
@@ -600,6 +591,18 @@ def packet_processor(p):
         logtxt='[MQTT publish|elevator] data[{}]'.format(state)
         mqttc.publish("kocom/myhome/elevator/state", json.dumps(state))
         # aa5530bc0044000100010300000000000000350d0d
+        
+        '''
+        elif p['src'] == 'ac' and p['cmd'] == 'state':
+            state = ac_parse(p['value'])
+            logtxt = '[MQTT publish|ac] id[{}] data[{}]'.format(p['src_subid'], state)
+            mqttc.publish('kocom/room/ac/' + p['src_subid'] + '/state', json.dumps(state), retain=True)
+        elif p['src'] == 'air':
+            if int(p['value'], 16) > 0:
+                state = air_parse(p['value'])
+            logtxt = '[MQTT publish|air] data[{}]'.format(state)
+            mqttc.publish('kocom/livingroom/air/state', json.dumps(state), retain=True)
+        '''
 
     if logtxt != "" and config.get('Log', 'show_mqtt_publish') == 'True':
         logging.info(logtxt)
@@ -783,7 +786,6 @@ def publish_discovery(dev, sub=''):
             logging.info(logtxt)
 
     '''
-
     elif dev == 'ac':
         num = int(room_h_dic.get(sub))
         # ha_topic = 'homeassistant/climate/kocom_livingroom_thermostat/config'
